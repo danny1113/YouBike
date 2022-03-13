@@ -6,8 +6,14 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <XCTest/XCTest.h>
+#import "NSObject+ObjectMapper.h"
+#import "YouBikeStop.h"
+
 
 @interface YouBikeTests : XCTestCase
+
+@property (nonatomic, strong) NSArray *youbikeStops;
 
 @end
 
@@ -15,6 +21,10 @@
 
 - (void)setUp {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    NSURL *url = [NSBundle.mainBundle URLForResource:@"YouBikeData" withExtension:@"json"];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+    self.youbikeStops = [YouBikeStop mapObjectWithDictionary:dictionary];
 }
 
 - (void)tearDown {
@@ -24,6 +34,9 @@
 - (void)testExample {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
+    for (YouBikeStop *stop in self.youbikeStops) {
+        NSLog(@"%f", stop.lat);
+    }
 }
 
 - (void)testPerformanceExample {
