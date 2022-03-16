@@ -12,11 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface YouBikeStopDetailView : UIView
 
-@property (nonatomic) YouBikeStop *stop;
-
-@property (weak, nonatomic) IBOutlet UILabel *stopNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *bikeDetailInfoLabel;
-
 - (instancetype)initWithStop:(YouBikeStop *)stop;
 
 @end

@@ -6,8 +6,11 @@
 //
 
 #import "ViewController.h"
+#import "YouBikeMapViewController.h"
 
 @interface ViewController ()
+
+- (IBAction)show:(id)sender;
 
 @end
 
@@ -18,5 +21,12 @@
     // Do any additional setup after loading the view.
 }
 
+
+- (IBAction)show:(id)sender {
+    YouBikeMapViewController *mapViewController = [[YouBikeMapViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mapViewController];
+    
+    [self presentViewController:navigationController animated:YES completion:nil];
+}
 
 @end

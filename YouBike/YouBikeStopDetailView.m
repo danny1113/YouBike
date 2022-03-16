@@ -7,6 +7,16 @@
 
 #import "YouBikeStopDetailView.h"
 
+
+@interface YouBikeStopDetailView ()
+
+@property (nonatomic) YouBikeStop *stop;
+
+@property (weak, nonatomic) IBOutlet UILabel *stopNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *bikeDetailInfoLabel;
+
+@end
+
 @implementation YouBikeStopDetailView
 
 @synthesize stop;
@@ -31,6 +41,10 @@
     }
     
     return self;
+}
+
+- (void)dealloc {
+    NSLog(@"YouBikeStopDetailView deinit");
 }
 
 - (void)configureView {

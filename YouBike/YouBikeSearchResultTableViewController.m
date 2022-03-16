@@ -28,6 +28,10 @@
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
 }
 
+- (void)dealloc {
+    NSLog(@"YouBikeSearchResultTableViewController deinit");
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -84,11 +88,9 @@ void configureCell(UITableViewCell *cell, YouBikeStop *stop) {
     NSString *searchText = searchController.searchBar.text;
     NSMutableArray *filteredData = [NSMutableArray array];
     
-    for (YouBikeStop *stop in mapViewController.youbikeData) {
-        if ([stop.name_tw containsString:searchText] || [stop.name_en containsString:searchText]) {
+    for (YouBikeStop *stop in mapViewController.youbikeData)
+        if ([stop.name_tw containsString:searchText] || [stop.name_en containsString:searchText])
             [filteredData addObject:stop];
-        }
-    }
     
     self.filteredData = filteredData;
     [self.tableView reloadData];
