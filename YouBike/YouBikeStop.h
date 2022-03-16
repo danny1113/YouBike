@@ -21,9 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) NSString *district_en;
 @property (nonatomic) NSString *address_en;
 
-@property (nonatomic) NSInteger parking_spaces;
-@property (nonatomic) NSInteger available_spaces;
-@property (nonatomic) NSInteger empty_spaces;
+@property (nonatomic) short parking_spaces;
+@property (nonatomic) short available_spaces;
+@property (nonatomic) short empty_spaces;
 
 @property (nonatomic) float lat;
 @property (nonatomic) float lng;

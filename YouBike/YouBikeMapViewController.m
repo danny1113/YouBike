@@ -9,10 +9,12 @@
 #import "NSObject+ObjectMapper.h"
 #import "YouBikeSearchResultTableViewController.h"
 #import "YouBikeAnnotation.h"
+#import "YouBikeStopDetailView.h"
 
 @interface YouBikeMapViewController ()
 
 @property (nonatomic, strong) YouBikeSearchResultTableViewController *searchResultController;
+@property (nonatomic) YouBikeStopDetailView *detailView;
 
 @end
 
@@ -23,6 +25,7 @@
 @synthesize searchController;
 @synthesize segmentedControl;
 @synthesize searchResultController;
+@synthesize detailView;
 @synthesize selectedType;
 @synthesize youbikeData;
 @synthesize stops;
@@ -40,12 +43,13 @@
     NSURL *url = [NSBundle.mainBundle URLForResource:@"YoubikeData" withExtension:@"json"];
     NSData *data = [NSData dataWithContentsOfURL:url];
     id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+    selectedType = 1;
     youbikeData = [YouBikeStop mapObjectWithDictionary:dictionary[@"retVal"]];
     stops = [self createAnnotations:youbikeData];
     
     self.title = @"YouBike";
     self.definesPresentationContext = YES;
-    selectedType = 1;
+    
     
     [self configureAppearance];
     [self setupSearchController];
@@ -125,12 +129,12 @@
     stopKeyTable = [NSMutableDictionary dictionaryWithCapacity:stops.count];
     NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:stops.count];
     
-    NSLog(@"type: %hd", selectedType);
+    NSLog(@"stops: %lu", stops.count);
     for (YouBikeStop *stop in stops) {
         if (stop.type != selectedType)
             continue;
         
-        YouBikeAnnotation *annotation = [YouBikeAnnotation new];
+        YouBikeAnnotation *annotation = [[YouBikeAnnotation alloc] init];
         annotation.stop = stop;
         annotation.title = stop.name_tw;
         annotation.coordinate = CLLocationCoordinate2DMake(stop.lat, stop.lng);
@@ -141,6 +145,29 @@
     NSLog(@"annotations: %lu", annotations.count);
     
     return annotations;
+}
+
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    YouBikeAnnotation *annotation = (YouBikeAnnotation *)view.annotation;
+    detailView = [[YouBikeStopDetailView alloc] initWithStop:annotation.stop];
+    
+    [UIView transitionWithView:self.view duration:0.25 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        [self.view addSubview:self.detailView];
+    } completion:nil];
+    
+    detailView.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [detailView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-28],
+        [detailView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:16],
+        [detailView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-16],
+        [detailView.heightAnchor constraintEqualToConstant:100]
+    ]];
+}
+
+- (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
+    [UIView transitionWithView:self.view duration:0.25 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        [self.detailView removeFromSuperview];
+    } completion:nil];
 }
 
 @end

@@ -43,29 +43,50 @@
     
     // Configure the cell...
     YouBikeStop *stop = filteredData[indexPath.row];
-    cell.textLabel.text = stop.name_tw;
+    configureCell(cell, stop);
     
     return cell;
+}
+
+void configureCell(UITableViewCell *cell, YouBikeStop *stop) {
+    UIImage *image;
+    UIColor *imageColor;
+    
+    if (stop.available_spaces == 0 || stop.empty_spaces == 0) {
+        image = [UIImage systemImageNamed:@"xmark.square.fill"];
+        imageColor = [UIColor systemRedColor];
+    } else if (stop.available_spaces < 3 || stop.empty_spaces < 3) {
+        image = [UIImage systemImageNamed:@"exclamationmark.triangle.fill"];
+        imageColor = [UIColor systemOrangeColor];
+    } else {
+        image = [UIImage systemImageNamed:@"checkmark.circle"];
+        imageColor = [UIColor systemGreenColor];
+    }
+    
+    cell.textLabel.text = stop.name_tw;
+    cell.imageView.image = image;
+    cell.imageView.tintColor = imageColor;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     YouBikeStop *stop = filteredData[indexPath.row];
     id annotation = mapViewController.stopKeyTable[stop.station_no];
     NSLog(@"%@", annotation);
-    if (annotation)
+    if (annotation && mapViewController.mapView)
         [self dismissViewControllerAnimated:YES completion:^{
+            [self.mapViewController.mapView selectAnnotation:annotation animated:NO];
             [self.mapViewController.mapView showAnnotations:@[annotation] animated:YES];
         }];
 }
 
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-    NSString *searchText = [searchController.searchBar text];
+    NSString *searchText = searchController.searchBar.text;
     NSMutableArray *filteredData = [NSMutableArray array];
     
     for (YouBikeStop *stop in mapViewController.youbikeData) {
-        if ([stop.name_tw containsString:searchText]) {
-            [filteredData addObject: stop];
+        if ([stop.name_tw containsString:searchText] || [stop.name_en containsString:searchText]) {
+            [filteredData addObject:stop];
         }
     }
     

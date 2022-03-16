@@ -24,6 +24,8 @@
 		3050203227DE18D2003C24FD /* ObjectMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3050203127DE18D2003C24FD /* ObjectMapper.m */; };
 		3050203A27DE19C7003C24FD /* YouBikeSearchResultTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3050203927DE19C7003C24FD /* YouBikeSearchResultTableViewController.m */; };
 		3050203D27DE2124003C24FD /* YouBikeAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3050203C27DE2124003C24FD /* YouBikeAnnotation.m */; };
+		309FF50327E077D00040C13A /* YouBikeStopDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 309FF50227E077D00040C13A /* YouBikeStopDetailView.m */; };
+		309FF50727E0783D0040C13A /* YouBikeStopDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 309FF50627E0783D0040C13A /* YouBikeStopDetailView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +79,9 @@
 		3050203927DE19C7003C24FD /* YouBikeSearchResultTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YouBikeSearchResultTableViewController.m; sourceTree = "<group>"; };
 		3050203B27DE2124003C24FD /* YouBikeAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YouBikeAnnotation.h; sourceTree = "<group>"; };
 		3050203C27DE2124003C24FD /* YouBikeAnnotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YouBikeAnnotation.m; sourceTree = "<group>"; };
+		309FF50127E077D00040C13A /* YouBikeStopDetailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YouBikeStopDetailView.h; sourceTree = "<group>"; };
+		309FF50227E077D00040C13A /* YouBikeStopDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YouBikeStopDetailView.m; sourceTree = "<group>"; };
+		309FF50627E0783D0040C13A /* YouBikeStopDetailView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = YouBikeStopDetailView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +149,9 @@
 				3050202627DE15B3003C24FD /* YouBikeStop.m */,
 				3050203B27DE2124003C24FD /* YouBikeAnnotation.h */,
 				3050203C27DE2124003C24FD /* YouBikeAnnotation.m */,
+				309FF50127E077D00040C13A /* YouBikeStopDetailView.h */,
+				309FF50227E077D00040C13A /* YouBikeStopDetailView.m */,
+				309FF50627E0783D0040C13A /* YouBikeStopDetailView.xib */,
 				30501FEF27DE12C3003C24FD /* Main.storyboard */,
 				30501FF227DE133B003C24FD /* Assets.xcassets */,
 				30501FF427DE133C003C24FD /* LaunchScreen.storyboard */,
@@ -296,6 +304,7 @@
 			files = (
 				30501FF627DE133C003C24FD /* LaunchScreen.storyboard in Resources */,
 				30501FF327DE133B003C24FD /* Assets.xcassets in Resources */,
+				309FF50727E0783D0040C13A /* YouBikeStopDetailView.xib in Resources */,
 				3050201F27DE13DE003C24FD /* YoubikeData.json in Resources */,
 				30501FF127DE12C3003C24FD /* Main.storyboard in Resources */,
 			);
@@ -325,6 +334,7 @@
 				30501FEE27DE12C3003C24FD /* ViewController.m in Sources */,
 				3050203A27DE19C7003C24FD /* YouBikeSearchResultTableViewController.m in Sources */,
 				30501FE827DE12C2003C24FD /* AppDelegate.m in Sources */,
+				309FF50327E077D00040C13A /* YouBikeStopDetailView.m in Sources */,
 				3050201D27DE139B003C24FD /* YouBikeMapViewController.m in Sources */,
 				3050202727DE15B3003C24FD /* YouBikeStop.m in Sources */,
 				3050203D27DE2124003C24FD /* YouBikeAnnotation.m in Sources */,
