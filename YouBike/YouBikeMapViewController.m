@@ -21,15 +21,10 @@
 
 @implementation YouBikeMapViewController
 
-@synthesize mapView;
-@synthesize searchController;
-@synthesize segmentedControl;
-@synthesize searchResultController;
-@synthesize detailView;
-@synthesize selectedType;
-@synthesize youbikeData;
-@synthesize stops;
-@synthesize stopKeyTable;
+@synthesize mapView, detailView;
+@synthesize searchController, searchResultController;
+@synthesize segmentedControl, selectedType;
+@synthesize youbikeData, stops, stopKeyTable;
 
 - (void)dealloc {
     NSLog(@"YouBikeMapViewController dealloc");
@@ -94,10 +89,12 @@
     [self.view addSubview:mapView];
     
     mapView.translatesAutoresizingMaskIntoConstraints = NO;
-    [[mapView.topAnchor constraintEqualToAnchor:self.view.topAnchor] setActive:YES];
-    [[mapView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor] setActive:YES];
-    [[mapView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor] setActive:YES];
-    [[mapView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor] setActive:YES];
+    [NSLayoutConstraint activateConstraints:@[
+        [mapView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+        [mapView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+        [mapView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [mapView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor]
+    ]];
 }
 
 - (void)setupToolBar {
