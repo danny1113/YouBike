@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @property (nonatomic, strong) NSArray<YouBikeStop *> *youbikeData;
+@property (nonatomic) NSArray *YouBikeData;
+
 @property (nonatomic, strong) NSArray *stops;
 @property (nonatomic, strong) NSMutableDictionary *stopKeyTable;
 

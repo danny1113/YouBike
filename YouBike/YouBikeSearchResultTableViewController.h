@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) YouBikeMapViewController *mapViewController;
 
-@property (nonatomic, strong) NSArray<YouBikeStop *> *filteredData;
+@property (nonatomic, strong) NSArray *filteredData;
 
 
 @end

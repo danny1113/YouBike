@@ -21,4 +21,19 @@
     return annotation;
 }
 
++ (instancetype)annotationWithObject:(id)object {
+    YouBikeAnnotation *annotation = [[self alloc] init];
+    
+    if (annotation) {
+        annotation.object = object;
+        annotation.title = object[@"name_tw"];
+        
+        float lat = [object[@"lat"] floatValue];
+        float lng = [object[@"lng"] floatValue];
+        annotation.coordinate = CLLocationCoordinate2DMake(lat, lng);
+    }
+    
+    return annotation;
+}
+
 @end

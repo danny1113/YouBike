@@ -6,13 +6,13 @@
 //
 
 #import "NSObject+ObjectMapper.h"
-#import "ObjectMapper/ObjectMapper.h"
+#import "ObjectMapper.h"
 
 
 @implementation NSObject (ObjectMapper)
 
 - (instancetype)mapObjectWithDictionary:(id)dictionary {
-    ObjectMapper *mapper = [[ObjectMapper alloc] init];
+    ObjectMapper *mapper = [ObjectMapper mapper];
     NSError *error;
     
     if ([dictionary isKindOfClass:[NSArray class]]) {

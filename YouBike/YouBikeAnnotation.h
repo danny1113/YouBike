@@ -14,8 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface YouBikeAnnotation : MKPointAnnotation
 
 @property (nonatomic, strong) YouBikeStop *stop;
+@property (nonatomic) id object;
 
 + (instancetype)annotationWithStop:(YouBikeStop *)stop;
++ (instancetype)annotationWithObject:(id)object;
 
 @end
 

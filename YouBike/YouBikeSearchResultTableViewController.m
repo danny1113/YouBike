@@ -46,8 +46,10 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
     // Configure the cell...
-    YouBikeStop *stop = filteredData[indexPath.row];
-    configureCell(cell, stop);
+//    YouBikeStop *stop = filteredData[indexPath.row];
+//    configureCell(cell, stop);
+    id stop = filteredData[indexPath.row];
+    configureCellWithObject(cell, stop);
     
     return cell;
 }
@@ -72,17 +74,60 @@ void configureCell(UITableViewCell *cell, YouBikeStop *stop) {
     cell.imageView.tintColor = imageColor;
 }
 
+void configureCellWithObject(UITableViewCell *cell, id stop) {
+    UIImage *image;
+    UIColor *imageColor;
+    short available_spaces = [stop[@"available_spaces"] shortValue];
+    short empty_spaces = [stop[@"empty_spaces"] shortValue];
+    
+    if (available_spaces == 0 || empty_spaces == 0) {
+        image = [UIImage systemImageNamed:@"xmark.square.fill"];
+        imageColor = [UIColor systemRedColor];
+    } else if (available_spaces < 3 || empty_spaces < 3) {
+        image = [UIImage systemImageNamed:@"exclamationmark.triangle.fill"];
+        imageColor = [UIColor systemOrangeColor];
+    } else {
+        image = [UIImage systemImageNamed:@"checkmark.circle"];
+        imageColor = [UIColor systemGreenColor];
+    }
+    
+    cell.textLabel.text = stop[@"name_tw"];
+    cell.imageView.image = image;
+    cell.imageView.tintColor = imageColor;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    YouBikeStop *stop = filteredData[indexPath.row];
-    id annotation = mapViewController.stopKeyTable[stop.station_no];
-    NSLog(@"%@", annotation);
-    if (annotation && mapViewController.mapView)
+//    YouBikeStop *stop = filteredData[indexPath.row];
+//    id annotation = mapViewController.stopKeyTable[stop.station_no];
+    id stop = filteredData[indexPath.row];
+    id annotation = mapViewController.stopKeyTable[stop[@"station_no"]];
+    
+    if (annotation)
         [self dismissViewControllerAnimated:YES completion:^{
-            [self.mapViewController.mapView selectAnnotation:annotation animated:NO];
             [self.mapViewController.mapView showAnnotations:@[annotation] animated:NO];
+            [self.mapViewController.mapView selectAnnotation:annotation animated:YES];
         }];
 }
 
+
+//- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+//    NSString *searchText = searchController.searchBar.text;
+//
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//        NSMutableArray *filteredData = [NSMutableArray array];
+//
+//        for (YouBikeStop *stop in self.mapViewController.youbikeData)
+//            if ([stop.name_tw localizedCaseInsensitiveContainsString:searchText] ||
+//                [stop.name_en localizedCaseInsensitiveContainsString:searchText])
+//                [filteredData addObject:stop];
+//
+//        self.filteredData = filteredData;
+//
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.tableView reloadData];
+//        });
+//    });
+//}
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     NSString *searchText = searchController.searchBar.text;
@@ -90,9 +135,9 @@ void configureCell(UITableViewCell *cell, YouBikeStop *stop) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSMutableArray *filteredData = [NSMutableArray array];
         
-        for (YouBikeStop *stop in self.mapViewController.youbikeData)
-            if ([stop.name_tw localizedCaseInsensitiveContainsString:searchText] ||
-                [stop.name_en localizedCaseInsensitiveContainsString:searchText])
+        for (id stop in self.mapViewController.YouBikeData)
+            if ([stop[@"name_tw"] localizedCaseInsensitiveContainsString:searchText] ||
+                [stop[@"name_en"] localizedCaseInsensitiveContainsString:searchText])
                 [filteredData addObject:stop];
         
         self.filteredData = filteredData;

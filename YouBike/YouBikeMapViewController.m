@@ -24,7 +24,7 @@
 @synthesize mapView, detailView;
 @synthesize searchController, searchResultController;
 @synthesize segmentedControl, selectedType;
-@synthesize youbikeData, stops, stopKeyTable;
+@synthesize youbikeData, stops, stopKeyTable, YouBikeData;
 
 - (void)dealloc {
     NSLog(@"YouBikeMapViewController dealloc");
@@ -50,8 +50,10 @@
         NSURL *url = [NSBundle.mainBundle URLForResource:@"YoubikeData" withExtension:@"json"];
         NSData *data = [NSData dataWithContentsOfURL:url];
         id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-        self.youbikeData = [YouBikeStop mapObjectWithDictionary:dictionary[@"retVal"]];
-        [self createAnnotations:self.youbikeData];
+//        self.youbikeData = [YouBikeStop mapObjectWithDictionary:dictionary[@"retVal"]];
+//        [self createAnnotations:self.youbikeData];
+        self.YouBikeData = dictionary[@"retVal"];
+        [self createAnnotationsWithObject:self.YouBikeData];
     });
 }
 
@@ -118,8 +120,9 @@
     selectedType = sender.selectedSegmentIndex + 1;
     
     [mapView removeAnnotations:mapView.annotations];
-    NSLog(@"youbikeData: %lu", youbikeData.count);
-    [self createAnnotations:youbikeData];
+    NSLog(@"youbikeData: %lu", YouBikeData.count);
+//    [self createAnnotations:youbikeData];
+    [self createAnnotationsWithObject:YouBikeData];
 }
 
 - (void)createAnnotations:(NSArray *)stops {
@@ -148,9 +151,37 @@
     
 }
 
+- (void)createAnnotationsWithObject:(NSArray *)stops {
+    
+    if (!stopKeyTable)
+        stopKeyTable = [NSMutableDictionary dictionaryWithCapacity:stops.count];
+    NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:stops.count];
+    NSLog(@"stops: %lu", stops.count);
+    short type = selectedType;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        for (id stop in stops) {
+            if ([stop[@"type"] shortValue] != type)
+                continue;
+            
+            YouBikeAnnotation *annotation = [YouBikeAnnotation annotationWithObject:stop];
+            [annotations addObject:annotation];
+            self.stopKeyTable[stop[@"station_no"]] = annotation;
+        }
+        
+        NSLog(@"annotations: %lu", annotations.count);
+        self.stops = annotations;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.mapView addAnnotations:annotations];
+        });
+    });
+    
+}
+
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     YouBikeAnnotation *annotation = (YouBikeAnnotation *)view.annotation;
-    detailView = [[YouBikeStopDetailView alloc] initWithStop:annotation.stop];
+    YouBikeStop *stop = [YouBikeStop mapObjectWithDictionary:annotation.object];
+    detailView = [[YouBikeStopDetailView alloc] initWithStop:stop];
     
     [UIView transitionWithView:self.view duration:0.25 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         [self.view addSubview:self.detailView];
