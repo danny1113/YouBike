@@ -19,6 +19,14 @@
 #import <objc/runtime.h>
 #include <sys/time.h>
 
+#define SuppressPerformSelectorLeakWarning(Stuff) \
+    do { \
+        _Pragma("clang diagnostic push") \
+        _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+        Stuff; \
+        _Pragma("clang diagnostic pop") \
+    } while (0)
+
 // Uncomment the line below to get debug statements
 //#define PRINT_DEBUG
 //Debug macros
@@ -373,7 +381,9 @@ typedef enum {
     NSString *selectorName = [MAP_CLASS_TO_ARRAY_PREFIX stringByAppendingString:key];
     if ([target respondsToSelector:NSSelectorFromString(selectorName)]) {
         DLOG(@"Found matching annotation for key %@", key);
-        Class clazz = [target performSelector:NSSelectorFromString(selectorName)];
+        
+        Class clazz;
+        SuppressPerformSelectorLeakWarning(clazz = [target performSelector:NSSelectorFromString(selectorName)]);
         if (clazz)
             return clazz;
         else
