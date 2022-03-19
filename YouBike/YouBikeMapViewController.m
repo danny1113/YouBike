@@ -35,22 +35,24 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSURL *url = [NSBundle.mainBundle URLForResource:@"YoubikeData" withExtension:@"json"];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     selectedType = 1;
-    youbikeData = [YouBikeStop mapObjectWithDictionary:dictionary[@"retVal"]];
-    stops = [self createAnnotations:youbikeData];
     
     self.title = @"YouBike";
     self.definesPresentationContext = YES;
-    
     
     [self configureAppearance];
     [self setupSearchController];
     [self setupSegmentedControl];
     [self setupToolBar];
     [self setupMapView];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        NSURL *url = [NSBundle.mainBundle URLForResource:@"YoubikeData" withExtension:@"json"];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        self.youbikeData = [YouBikeStop mapObjectWithDictionary:dictionary[@"retVal"]];
+        [self createAnnotations:self.youbikeData];
+    });
 }
 
 - (void)configureAppearance {
@@ -81,10 +83,9 @@
 }
 
 - (void)setupMapView {
-    mapView = [MKMapView new];
+    mapView = [[MKMapView alloc] initWithFrame:CGRectZero];
     mapView.delegate = self;
     [mapView registerClass:[YouBikeStop class] forAnnotationViewWithReuseIdentifier:@"POINT"];
-    [self.mapView addAnnotations:stops];
     
     [self.view addSubview:mapView];
     
@@ -105,7 +106,7 @@
 }
 
 - (void)dismiss:(UIBarButtonItem *)sender {
-    if (self.presentingViewController != nil) {
+    if (self.presentingViewController) {
         id selected = [mapView.selectedAnnotations firstObject];
         [mapView deselectAnnotation:selected animated:YES];
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -118,30 +119,33 @@
     
     [mapView removeAnnotations:mapView.annotations];
     NSLog(@"youbikeData: %lu", youbikeData.count);
-    NSArray *annotaions = [self createAnnotations:youbikeData];
-    [mapView addAnnotations:annotaions];
+    [self createAnnotations:youbikeData];
 }
 
-- (NSArray *)createAnnotations:(NSArray *)stops {
-    stopKeyTable = [NSMutableDictionary dictionaryWithCapacity:stops.count];
-    NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:stops.count];
+- (void)createAnnotations:(NSArray *)stops {
     
-    NSLog(@"stops: %lu", stops.count);
-    for (YouBikeStop *stop in stops) {
-        if (stop.type != selectedType)
-            continue;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        self.stopKeyTable = [NSMutableDictionary dictionaryWithCapacity:stops.count];
+        NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:stops.count];
         
-        YouBikeAnnotation *annotation = [[YouBikeAnnotation alloc] init];
-        annotation.stop = stop;
-        annotation.title = stop.name_tw;
-        annotation.coordinate = CLLocationCoordinate2DMake(stop.lat, stop.lng);
-        [annotations addObject:annotation];
-        stopKeyTable[stop.station_no] = annotation;
-    }
+        NSLog(@"stops: %lu", stops.count);
+        
+        for (YouBikeStop *stop in stops) {
+            if (stop.type != self.selectedType)
+                continue;
+            
+            YouBikeAnnotation *annotation = [YouBikeAnnotation annotationWithStop:stop];
+            [annotations addObject:annotation];
+            self.stopKeyTable[stop.station_no] = annotation;
+        }
+        
+        NSLog(@"annotations: %lu", annotations.count);
+        self.stops = annotations;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.mapView addAnnotations:annotations];
+        });
+    });
     
-    NSLog(@"annotations: %lu", annotations.count);
-    
-    return annotations;
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {

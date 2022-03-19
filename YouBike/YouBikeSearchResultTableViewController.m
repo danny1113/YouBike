@@ -79,21 +79,28 @@ void configureCell(UITableViewCell *cell, YouBikeStop *stop) {
     if (annotation && mapViewController.mapView)
         [self dismissViewControllerAnimated:YES completion:^{
             [self.mapViewController.mapView selectAnnotation:annotation animated:NO];
-            [self.mapViewController.mapView showAnnotations:@[annotation] animated:YES];
+            [self.mapViewController.mapView showAnnotations:@[annotation] animated:NO];
         }];
 }
 
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     NSString *searchText = searchController.searchBar.text;
-    NSMutableArray *filteredData = [NSMutableArray array];
     
-    for (YouBikeStop *stop in mapViewController.youbikeData)
-        if ([stop.name_tw containsString:searchText] || [stop.name_en containsString:searchText])
-            [filteredData addObject:stop];
-    
-    self.filteredData = filteredData;
-    [self.tableView reloadData];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        NSMutableArray *filteredData = [NSMutableArray array];
+        
+        for (YouBikeStop *stop in self.mapViewController.youbikeData)
+            if ([stop.name_tw localizedCaseInsensitiveContainsString:searchText] ||
+                [stop.name_en localizedCaseInsensitiveContainsString:searchText])
+                [filteredData addObject:stop];
+        
+        self.filteredData = filteredData;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    });
 }
 
 @end

@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) YouBikeStop *stop;
 
++ (instancetype)annotationWithStop:(YouBikeStop *)stop;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -9,4 +9,16 @@
 
 @implementation YouBikeAnnotation
 
++ (instancetype)annotationWithStop:(YouBikeStop *)stop {
+    YouBikeAnnotation *annotation = [[self alloc] init];
+    
+    if (annotation) {
+        annotation.stop = stop;
+        annotation.title = stop.name_tw;
+        annotation.coordinate = CLLocationCoordinate2DMake(stop.lat, stop.lng);
+    }
+    
+    return annotation;
+}
+
 @end
