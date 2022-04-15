@@ -14,7 +14,7 @@
 @interface YouBikeMapViewController ()
 
 @property (nonatomic, strong) YouBikeSearchResultTableViewController *searchResultController;
-@property (nonatomic) YouBikeStopDetailView *detailView;
+@property (nonatomic, strong) YouBikeStopDetailView *detailView;
 
 @end
 
@@ -58,7 +58,7 @@
 }
 
 - (void)configureAppearance {
-    UINavigationBarAppearance *appearance = [UINavigationBarAppearance new];
+    UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
     self.navigationItem.scrollEdgeAppearance = appearance;
 }
 
@@ -69,9 +69,9 @@
     searchController = [[UISearchController alloc]initWithSearchResultsController:searchResultController];
     searchController.searchBar.delegate = searchResultController;
     searchController.searchResultsUpdater = searchResultController;
-    [searchController setShowsSearchResultsController:YES];
-    [searchController setObscuresBackgroundDuringPresentation:NO];
-    [searchController.searchBar setPlaceholder:@"Search YouBike Stations"];
+    searchController.showsSearchResultsController = YES;
+    searchController.obscuresBackgroundDuringPresentation = NO;
+    searchController.searchBar.placeholder = @"Search YouBike Stations";
     
     self.navigationItem.searchController = searchController;
     self.navigationItem.hidesSearchBarWhenScrolling = NO;
@@ -102,7 +102,7 @@
 
 - (void)setupToolBar {
     UIImage *starImage = [[UIImage systemImageNamed:@"star.fill"] imageWithTintColor:[UIColor systemYellowColor] renderingMode:UIImageRenderingModeAlwaysOriginal];
-#warning: set selector...
+#warning Set selector...
     UIBarButtonItem *starButton = [[UIBarButtonItem alloc] initWithImage:starImage style:UIBarButtonItemStylePlain target:self action:nil];
     [self.navigationItem setLeftBarButtonItem:starButton];
 }
